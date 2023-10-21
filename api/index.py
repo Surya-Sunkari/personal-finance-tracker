@@ -4,12 +4,14 @@ import certifi
 import datetime
 import csv
 import os
+from flask_cors import CORS
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 app = Flask(__name__)
 db_client = None
+CORS(app)
 
 @app.route("/create_user", methods=['POST'])
 def create_user():
