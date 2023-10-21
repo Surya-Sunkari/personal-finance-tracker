@@ -1,6 +1,9 @@
 from flask import Flask
 from flask import request
 import certifi
+import datetime
+import csv
+import os
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -31,11 +34,79 @@ def login():
     password = user_data["password"]
 
     user = db["users"].find_one({"username": username})
-    if user is None or user["password"] != password:
-        return {"success": False}
+    if user is None:
+        return {"success": False, "message": "Invalid username"}
+    if user["password"] != password:
+        return {"success": False, "message": "Invalid password"}
 
-    return {"success": True}
+    return {"success": True, "user_id": user_id}
 
+@app.route("/new_expense", methods=['POST'])
+def new_expense():
+    db = get_db()
+    expense_data = request.get_json()
+    user_id = expense_data["user_id"]
+    name = expense_data["name"]
+    cost = expense_data["cost"]
+    parsed_date = expense_data["date"].split("-")
+    date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]), 0, 0, 0)
+    category = get_category(name)
+    result = db["expenses"].insert_one({"user_id": user_id, "name": name, "cost": cost, "date": date, "category": category})
+
+    if result.acknowledged:
+        return {"success": True}
+    return {"success": False}
+
+@app.route("/new_expenses", methods=['POST'])
+def new_expenses():
+    db = get_db()
+
+    user_id = request.form['user_id']
+    uploaded_file = request.files['file']
+    filepath = os.path.join("uploaded_files", uploaded_file.filename)
+    uploaded_file.save(filepath)
+
+    data = []
+    names = []
+    with open(filepath, 'r', encoding='utf-8-sig') as file:
+        csv_file = csv.reader(file)
+        for row in csv_file:
+            parsed_date = row[2].split("-")
+            date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]), 0, 0, 0)
+            data.append({"name": row[0], "cost": int(row[1]), "date": date, "user_id": user_id})
+            names.append(row[0])
+        print(data)
+    os.remove(filepath)
+
+    categories = get_category_list(names)
+    for i in range(len(data)):
+        data[i]["category"] = categories[i]
+
+    if data:
+        result = db["expenses"].insert_many(data)
+        if result.acknowledged:
+            return {"success": True}
+    return {"success": False}
+
+@app.route("/category_costs", methods=['POST'])
+def category_costs():
+    db = get_db()
+
+    expense_data = request.get_json()
+    user_id = expense_data["user_id"]
+
+
+
+
+
+def get_category(name):
+    return "Food"
+
+def get_category_list(names):
+    list = []
+    for name in names:
+        list.append("Shopping")
+    return list
 
 def get_db():
     global db_client
