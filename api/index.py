@@ -41,7 +41,7 @@ def login():
     if user["password"] != password:
         return {"success": False, "message": "Invalid password"}
 
-    return {"success": True, "user_id": user_id}
+    return {"success": True, "user_id": str(user["_id"])}
 
 @app.route("/new_expense", methods=['POST'])
 def new_expense():
