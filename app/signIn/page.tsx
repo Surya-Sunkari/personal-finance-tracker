@@ -12,10 +12,37 @@ const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+  const [showPasswordMessage, setShowPasswordMessage] = useState(false);
+
   const handleSignIn = async () => {
     console.log("handling sign in");
     console.log(`Email: ${email}, Password: ${password}`);
+    try {
+        const loginData = {
+          username: email,
+          password: password,
+        };
+    
+        const response = await axios.post('http://127.0.0.1:5328/login', loginData);
+    
+        if (response.status === 200) {
+          if(response.data.success) {
+            //TODO: create and store jwt token
+            setShowPasswordMessage(false);
+            router.push('/');
+          } else {
+            setShowPasswordMessage(true);
+            console.error('Login failed:', response.data);
+          }
+        } else {
+            setShowPasswordMessage(true);
+            console.error('Error:', response.data);
+        }
+      } catch (error) {
+        setShowPasswordMessage(true);
+        // Handle any network or request error
+        console.error('Network/Request Error:', error);
+      }
   }
 
   return (
@@ -42,6 +69,7 @@ const Login = () => {
             />
         </div>
         <div className=" flex flex-col justify-center items-center">
+            {showPasswordMessage ? <p className=" text-red-700 text-sm pb-2">Invalid Username or Password</p> : null}
             <button
                 className="bg-sky-900 text-white rounded-full py-2 px-4 hover:bg-sky-700 transition duration-300"
                 onClick={handleSignIn}
