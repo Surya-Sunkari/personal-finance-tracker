@@ -15,19 +15,26 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPasswordMessage, setShowPasswordMessage] = useState(false);
   
   const handleSignUp = async () => {
     console.log("handling sign up");
     console.log(`Email: ${email}, Password: ${password} Confirm Password: ${confirmPassword} firstName: ${firstName} lastName: ${lastName}`);
     if(password !== confirmPassword) {
-
+        console.log("passwords did not match")
+        setShowPasswordMessage(true);
     } else {
         //TODO: automatically sign in and route to home page instead of routing to sign in page
         console.log("passwords matched")
+        setShowPasswordMessage(false);
         router.push("/signIn");
     }
     
   };
+
+  useEffect(() => {
+    console.log("show password: " + showPasswordMessage);
+  }, []);
 
   return (
     <div className="flex h-screen w-screen justify-center items-center m-0 p-0 bg-gradient-to-tr from-blue-100 via-orange-100 to-orange-200">
@@ -70,7 +77,7 @@ const SignUp = () => {
                 />
             </div>
             <div className=" flex flex-col justify-center items-center">
-                <p className=" text-red-700 text-sm pb-2">Passwords must match!</p>
+                {showPasswordMessage ? <p className=" text-red-700 text-sm pb-2">Passwords must match!</p> : null}
                 <button
                     className="bg-sky-900 text-white rounded-full py-2 px-4 hover:bg-sky-700 transition duration-300"
                     onClick={handleSignUp}
