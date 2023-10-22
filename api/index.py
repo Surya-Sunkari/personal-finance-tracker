@@ -11,6 +11,7 @@ import jwt
 import gpt_calls
 import ast
 from gpt_calls import categorize_single, categorize_multiple, get_recommendation
+import pandas as pd
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -214,6 +215,7 @@ def new_stock():
     parsed_time = stock_data.get("time", "00:00").split(":")
     date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]),
                              int(parsed_time[0]), int(parsed_time[1]), 0)
+    db["orders"].insert_one({"user_id": user_id, "ticker": ticker, "direction": "buy", "quantity": quantity})
     result = db["stocks"].insert_one({"user_id": user_id, "ticker": ticker,
                                       "name": get_stock_name(ticker),
                                       "quantity": quantity, "date_bought": date})
@@ -232,6 +234,7 @@ def new_stocks():
     uploaded_file.save(filepath)
 
     data = []
+    orders = []
     with open(filepath, 'r', encoding='utf-8-sig') as file:
         csv_file = csv.reader(file)
         for row in csv_file:
@@ -241,6 +244,7 @@ def new_stocks():
             stock = db["stocks"].find_one({"user_id": user_id, "ticker": ticker})
             if stock is not None:
                 new_amt = stock["quantity"] + float(row[1])
+                db["orders"].insert_one({"user_id": user_id, "ticker": ticker, "direction": "buy", "quantity": float(row[1])})
                 db["stocks"].update_one({"user_id": user_id, "ticker": ticker},
                                         {"$set": {'quantity': new_amt}})
                 continue
@@ -249,14 +253,18 @@ def new_stocks():
             parsed_time = row[3].split(":")
             date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]),
                                      int(parsed_time[0]), int(parsed_time[1]), 0)
+            orders.append({"user_id": user_id, "ticker": ticker, "direction": "buy", "quantity": float(row[1])})
             data.append({"user_id": user_id, "ticker": ticker, "name": get_stock_name(ticker), "quantity": float(row[1]), "date_bought": date})
     os.remove(filepath)
 
     if data:
+        db["orders"].insert_many(orders)
         result = db["stocks"].insert_many(data)
         if result.acknowledged:
             return {"success": True}
-    return {"success": False}
+        else:
+            return {"success": False}
+    return {"success": True}
 
 @app.route("/sell_stock", methods=['POST'])
 def sell_stock():
@@ -266,20 +274,22 @@ def sell_stock():
     user_id = stock_data["user_id"]
     ticker = stock_data["ticker"]
     sell_all = stock_data.get("sell_all", False)
-    sell_amt = stock_data.get("sell_amt", 0)
+    sell_amt = stock_data.get("quantity", 0)
     stock = db["stocks"].find_one({"user_id": user_id, "ticker": ticker})
-    if stock is None:
+    if stock is None or not stock["quantity"]:
         return {"success": False}
 
     if sell_all:
-        db["stocks"].delete_one({"user_id": user_id, "ticker": ticker})
+        db["orders"].insert_one({"user_id": user_id, "ticker": ticker, "direction": "sell", "quantity": stock["quantity"]})
+        db["stocks"].update_one({"user_id": user_id, "ticker": ticker},
+                                {"$set": {'quantity': 0}})
     else:
         new_amt = stock["quantity"] - sell_amt
         if new_amt <= 0:
-            db["stocks"].delete_one({"user_id": user_id, "ticker": ticker})
-        else:
-            db["stocks"].update_one({"user_id": user_id, "ticker": ticker},
-                                    {"$set": {'quantity': new_amt}})
+            new_amt = 0
+        db["orders"].insert_one({"user_id": user_id, "ticker": ticker, "direction": "sell", "quantity": stock["quantity"] - new_amt})
+        db["stocks"].update_one({"user_id": user_id, "ticker": ticker},
+                                {"$set": {'quantity': new_amt}})
     return {"success": True}
 
 @app.route("/stock_news", methods=['POST'])
@@ -346,6 +356,23 @@ def get_portfolio_table():
         data.append({"id": i, "ticker": ticker, "quantity": quantity, "price": price, "value": total_value})
         i += 1
     return {"data": data}
+
+@app.route("/get_portfolio_time", methods=['POST'])
+def get_portfolio_time():
+    db = get_db()
+    stock_data = request.get_json()
+    user_id = stock_data["user_id"]
+    stocks = db["stocks"].find({"user_id": user_id}).sort("date")
+
+    hist_dict = {}
+    hist_temp = yf.Ticker(stocks[0]["ticker"]).history(period="3y")
+    hist_start_time = yf.Ticker(stocks[0]["ticker"]).history(period="3y").index[0]
+    stock_start_time = stocks[0]["date_bought"]
+    for stock in stocks:
+        history = yf.Ticker(stock["ticker"]).history(period="3y")
+        hist_dict[stock["ticker"]] = {"history": history.to_dict(orient='records'), "volume": 0}
+    return {data: ""}
+
 
 def get_stock_price(ticker):
     stock = yf.Ticker(ticker)

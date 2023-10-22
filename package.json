@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+<<<<<<< HEAD
+    "flask-dev": "pip3 install --user -r requirements.txt && python -m flask --app api/index run -p 5328",
+=======
     "flask-dev": "pip install -r requirements.txt && python -m flask --app api/index run -p 5328",
+>>>>>>> 01704503a2739112b6051edc6e1b66bba86b62ec
     "next-dev": "next dev",
     "dev": "concurrently \"pnpm run next-dev\" \"pnpm run flask-dev\"",
     "build": "next build",
