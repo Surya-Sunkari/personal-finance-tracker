@@ -295,14 +295,14 @@ def stock_news():
         i = 0
         articles = get_stock_news(stock["ticker"])
         article = articles[0]
-        while article["link"] in links or (stock["ticker"] not in article["title"] and stock["name"].split(" ")[0] not in article["title"]):
+        while article["link"] in links or (stock["ticker"] not in article["title"] and stock["name"].split(" ")[0] not in article["title"]) or article["publisher"] == "South China Morning Post":
             i += 1
             if i == len(articles):
                 article = articles[0]
                 break
             article = articles[i]
         links.append(article["link"])
-        data.append({"title": article["title"], "link": article["link"],
+        data.append({"title": article["title"], "link": article["link"], "publisher": article["publisher"],
                      "time": datetime.datetime.utcfromtimestamp(article["providerPublishTime"])})
 
     return {"data": data}
