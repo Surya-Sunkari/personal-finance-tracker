@@ -12,6 +12,7 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 // import NewCarousel from "@/components/NewCarousel";
 import AddInvestments from "@/components/AddInvestments";
+import { HiHome } from "react-icons/hi2";
 
 const Investments = () => {
   const [user_id, setUserId] = useState('');
@@ -111,7 +112,7 @@ const Investments = () => {
     <div>
       <div className="h-screen flex flex-col justify-between bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
         <div className="px-7 py-5 flex justify-between">
-          <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={() => router.push("/")}>Home</p>
+          <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={() => router.push("/")}><HiHome size={50}/></p>
           <p className="  text-3xl text-white font-semibold text-right " >Cash Guardian: Investments</p>
           <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={handleSignOutClick}>Sign Out</p>
         </div>
@@ -138,7 +139,7 @@ const Investments = () => {
                     <div className="mt-3">
                       <Button variant="contained" onClick={() => {setChartRender(chartRender + 1)
                                                                   setTableRender(tableRender + 1)
-                                                                  setNewsRender(newsRender + 1)}} className="bg-blue-600 w-60">Refresh</Button>
+                                                                  setNewsRender(newsRender + 1)}} className="bg-blue-700 hover:bg-blue-800 w-64 ">Refresh</Button>
                     </div>
                   </div>  
                 </div>

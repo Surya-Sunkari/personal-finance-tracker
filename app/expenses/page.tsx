@@ -14,6 +14,7 @@ import ExpenseChart from "@/components/ExpenseChart";
 import AddExpense from "@/components/AddExpense";
 import AddExpenses from "@/components/AddExpenses";
 import { RingLoader } from "react-spinners";
+import { HiHome } from "react-icons/hi2";
 
 const Expenses = () => {
   const [user_id, setUserId] = useState('');
@@ -129,7 +130,7 @@ const Expenses = () => {
     <div>
       <div className="h-screen flex flex-col justify-between bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
         <div className="px-7 py-5 flex justify-between">
-          <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={() => router.push("/")}>Home</p>
+          <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={() => router.push("/")}><HiHome size={50}/></p>
           <p className="  text-3xl text-white font-semibold text-right " >Cash Guardian: Expenses</p>
           <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={handleSignOutClick}>Sign Out</p>
         </div>
@@ -140,7 +141,7 @@ const Expenses = () => {
                   <PowerTable tableData={tableData} />
                 </div>
                 <div className=" h-[5/8] flex justify-evenly items-center w-full">
-                  {viewChart ? <ExpenseChart title="Expense Analysis" chartData={chartData} chartHeight={150} chartWidth={500} blockHeight={200} blockWidth={375} bgColor={"bg-red-200"}/> : null}
+                  {viewChart ? <ExpenseChart title="Expense Analysis" chartData={chartData} chartHeight={150} chartWidth={500} blockHeight={200} blockWidth={375} bgColor={"bg-green-100"}/> : null}
                   <div className="flex flex-col justify-center items-center">
                     <div className="mb-3">
                       <AddExpense />
@@ -150,7 +151,7 @@ const Expenses = () => {
                     </div>
                     <div className="mt-3">
                       <Button variant="contained" onClick={() => {setChartRender(chartRender + 1)
-                                                                  setTableRender(tableRender + 1)}} className="bg-blue-600 w-60">Refresh</Button>
+                                                                  setTableRender(tableRender + 1)}} className="bg-green-700	 hover:bg-green-800  w-60">Refresh</Button>
                     </div>
                   </div>  
                 </div>
@@ -161,7 +162,7 @@ const Expenses = () => {
               <div className="text-black text-left px-3 text-sm">
                 {loading ? (<div className="flex flex-col items-center justify-center h-full">
                   <RingLoader><div>Loading...</div></RingLoader>
-                  </div>) : !showRecommendations ? "Press \"Generate Recommendations\" to get started!" : <div><p className="py-3">{recommendations[0]}</p><hr /><p className="py-3">{recommendations[1]}</p></div>}
+                  </div>) : !showRecommendations ? "Press \"Generate Recommendations\" to get started!" : <div><p className="p-3 font-semibold">{recommendations[0]}</p><br /><p className="p-3 font-semibold">{recommendations[1]}</p></div>}
               </div>
               <div className="pb-6">
                 <Button variant="contained" onClick={handleGenerateRecommendations} className="bg-blue-600 text-center">Generate Recommendations</Button>

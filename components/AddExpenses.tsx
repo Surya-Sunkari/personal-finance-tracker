@@ -91,7 +91,7 @@ const AddExpenses = () => {
   return (
     <div>
       <ToastContainer />
-      <Button variant="contained" onClick={handleOpen} className="bg-blue-600 w-60">
+      <Button variant="contained" onClick={handleOpen} className="bg-green-700	 hover:bg-green-800 w-60">
         Add Expenses From CSV
       </Button>
       <Modal

@@ -92,7 +92,7 @@ const AddExpense = () => {
     return (
         <div>
             <ToastContainer />
-            <Button variant="contained" onClick={handleOpen} className="bg-blue-600 w-60">Manually Add Expense</Button>
+            <Button variant="contained" onClick={handleOpen} className="bg-green-700	 hover:bg-green-800 w-60">Manually Add Expense</Button>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
