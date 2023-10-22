@@ -118,14 +118,16 @@ const Investments = () => {
         {/* {viewChart ? <ExpenseChart title="Your Investments:" chartData={chartData} chartHeight={200} chartWidth={400} blockHeight={240} blockWidth={384}/> : null}
         <AddInvestment /> */}
         <div className="w-full h-full flex justify-center items-center">
-            <Card className=" w-1/3 h-full bg-slate-200 rounded-3xl  m-3 shadow-lg border-2 border-black flex flex-col justify-between items-center ">
+            <Card className=" w-1/3 h-full bg-slate-200 rounded-3xl  m-3 shadow-lg border-2 border-black flex flex-col justify-evenly items-center ">
               {/* <News_Carousel news={newsData}/> */}
+              <h1 className="font-bold text-3xl text-black text-center py-3">Relevant News</h1>
               {viewNews ? <NewCarousel newsData={newsData} /> : null}
+              {/* {viewNews ? newsData.map((item, index) => ()} */}
             </Card>
             <Card className=" w-2/3 h-full bg-slate-200 rounded-3xl  m-3 shadow-lg border-2 border-black">
               <div className=" flex flex-col justify-between items-center w-full h-full">
                 <div className=" h-[5/8] flex justify-evenly items-center w-full">
-                  {viewChart ? <ExpenseChart title="Portfolio Analysis" chartData={chartData} chartHeight={150} chartWidth={400} blockHeight={400} blockWidth={100} bgColor={"bg-blue-200"}/> : null}
+                  {viewChart ? <ExpenseChart title="Portfolio Analysis" chartData={chartData} chartHeight={150} chartWidth={600} blockHeight={400} blockWidth={100} bgColor={"bg-blue-200"}/> : null}
                   <div className="flex flex-col justify-center items-center">
                     <div className="mb-3">
                       <AddInvestment />

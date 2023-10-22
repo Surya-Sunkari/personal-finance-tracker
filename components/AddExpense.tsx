@@ -39,9 +39,15 @@ const AddExpense = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('jwt_token');
-        const user_id = jwt.decode(token).user_id;
-        setUserId(user_id);
-    }, []);
+        if(!token) {
+          console.log("no token found, routing to sign in page");
+          router.push('/signIn');
+        } else {
+          const user_id = jwt.decode(token).user_id;
+          console.log(user_id);
+          setUserId(user_id);
+        }
+      }, []);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);

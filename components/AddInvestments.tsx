@@ -6,6 +6,7 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
+import { useRouter } from "next/navigation";
 import jwt from 'jsonwebtoken';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,10 +28,18 @@ const AddInvestments = () => {
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState('');
 
+  const router = useRouter();
+  
   useEffect(() => {
     const token = localStorage.getItem('jwt_token');
-    const user_id = jwt.decode(token).user_id;
-    setUserId(user_id);
+    if(!token) {
+      console.log("no token found, routing to sign in page");
+      router.push('/signIn');
+    } else {
+      const user_id = jwt.decode(token).user_id;
+      console.log(user_id);
+      setUserId(user_id);
+    }
   }, []);
 
   const handleOpen = () => setOpen(true);

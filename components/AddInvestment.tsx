@@ -37,12 +37,19 @@ const AddInvestment = () => {
     const [userId, setUserId] = useState('');
 
     const router = useRouter();
+    
 
     useEffect(() => {
         const token = localStorage.getItem('jwt_token');
-        const user_id = jwt.decode(token).user_id;
-        setUserId(user_id);
-    }, []);
+        if(!token) {
+          console.log("no token found, routing to sign in page");
+          router.push('/signIn');
+        } else {
+          const user_id = jwt.decode(token).user_id;
+          console.log(user_id);
+          setUserId(user_id);
+        }
+      }, []);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -115,7 +122,7 @@ const AddInvestment = () => {
                             <input type="text" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="2023-10-21" value={InvestmentDate} onChange={(e) => setInvestmentDate(e.target.value)}></input>
                         </div>
                         <div className=' py-3'>
-                            <label className="block text-sm font-medium mb-2 dark:text-white">Investment Date (hh:mm): </label>
+                            <label className="block text-sm font-medium mb-2 dark:text-white">Investment Time (hh:mm): </label>
                             <input type="text" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="08:37" value={InvestmentTime} onChange={(e) => setInvestmentTime(e.target.value)}></input>
                         </div>
                         <div className=' py-3'>
