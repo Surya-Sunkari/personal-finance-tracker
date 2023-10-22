@@ -16,6 +16,14 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 import requests
+import os
+
+# Define the directory path
+directory = "uploaded_files"
+
+# Create the directory if it doesn't exist
+if not os.path.exists(directory):
+    os.makedirs(directory)
 
 app = Flask(__name__)
 db_client = None

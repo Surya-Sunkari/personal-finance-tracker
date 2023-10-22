@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import StockTable from "./stock-table";
+import StockTable from "../../components/stock-table";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import ExpenseChart from "@/components/ExpenseChart";
-import AddInvestment from "@/components/AddInvestments";
+import AddInvestment from "@/components/AddInvestment";
 
 const Investments = () => {
   const [user_id, setUserId] = useState('');
