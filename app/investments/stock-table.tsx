@@ -4,23 +4,25 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import { useRouter } from "next/navigation";
+import { headers } from 'next/dist/client/components/headers';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 130 },
   {
-    field: 'name',
-    headerName: 'Name',
-    width: 175,
+    field: 'ticker',
+    headerName: 'Ticker',
+    width: 230,
   },
   {
-    field: 'category',
-    headerName: 'Category',
-    width: 175,
+    field: 'quantity',
+    headerName: 'Quantity',
+    width: 230,
+    sortComparator: (a, b) => parseInt(a) - parseInt(b),
   },
   {
-    field: 'cost',
-    headerName: 'Cost',
-    width: 175,
+    field: 'price',
+    headerName: 'Price',
+    width: 230,
     sortComparator: (a, b) => parseFloat(a) - parseFloat(b),
     valueFormatter: (params) =>
       new Intl.NumberFormat('en-US', {
@@ -29,16 +31,19 @@ const columns: GridColDef[] = [
       }).format(params.value),
   },
   {
-    field: 'date',
-    headerName: 'Date',
-    width: 175,
-    sortComparator: (a, b) => new Date(a) - new Date(b),
+    field: 'value',
+    headerName: 'Value',
+    width: 230,
+    sortComparator: (a, b) => parseInt(a) - parseInt(b),
     valueFormatter: (params) =>
-      new Intl.DateTimeFormat('en-US').format(new Date(params.value)),
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(params.value),
   },
 ];
 
-function PowerTable(): JSX.Element {
+function StockTable(): JSX.Element {
   const router = useRouter();
   const [tableData, setTableData] = useState([]);
   const [user_id, setUserId] = useState('');
@@ -49,9 +54,6 @@ function PowerTable(): JSX.Element {
       // 'Access-Control-Allow-Origin': 'http://localhost:3000', // Your allowed origin
     },
   };
-  
-  
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,8 +65,8 @@ function PowerTable(): JSX.Element {
         const user_id = jwt.decode(token).user_id;
         console.log(user_id);
         setUserId(user_id);
-        axios.options('http://127.0.0.1:5328/get_expenses', null, config).then( async (response) => {
-          const res = await axios.post('http://127.0.0.1:5328/get_expenses', {user_id: user_id}, config);
+        axios.options('http://127.0.0.1:5328/get_portfolio_table', null, config).then( async (response) => {
+          const res = await axios.post('http://127.0.0.1:5328/get_portfolio_table', {user_id: user_id}, config);
           console.log(res.data);
           setTableData(res.data.data);
         }
@@ -86,11 +88,10 @@ function PowerTable(): JSX.Element {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '45vh',
-        marginTop: '20px'
+        height: '100vh',
       }}
     >
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 400, width: '80%' }}>
         <DataGrid
           rows={tableData}
           columns={columns}
@@ -102,4 +103,4 @@ function PowerTable(): JSX.Element {
   );
 }
 
-export default PowerTable;
+export default StockTable;
