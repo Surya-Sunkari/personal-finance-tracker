@@ -10,6 +10,7 @@ import AddInvestment from "@/components/AddInvestment";
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import NewCarousel from "@/components/NewCarousel";
+import AddInvestments from "@/components/AddInvestments";
 
 const Investments = () => {
   const [user_id, setUserId] = useState('');
@@ -19,6 +20,9 @@ const Investments = () => {
   const [chartRender, setChartRender] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [viewChart, setViewChart] = useState(false);
+  const [tableRender, setTableRender] = useState(0);
+  const [tableData, setTableData] = useState([]);
+  const [viewTable, setViewTable] = useState(false);
 
   const router = useRouter();
 
@@ -33,24 +37,11 @@ const Investments = () => {
       setUserId(user_id);
       setNewsRender(newsRender + 1);
       setChartRender(chartRender + 1);
+      setTableRender(tableRender + 1);
     }
   }, []);
 
   useEffect(() => {
-    const fetchNewsData = async () => {
-      if(user_id) {
-        try {
-          const response = await axios.post('http://127.0.0.1:5328/stock_news', {user_id: user_id});
-          var data = response.data
-          console.log(data)
-          setNewsData(data)
-          setViewNews(true)
-          fetchNewsData
-        } catch (error) {
-          console.error('Network/Request Error:', error);
-        }
-      }
-    }
     const fetchChartData = async () => {
       console.log(user_id);
       if(user_id) {
@@ -64,9 +55,52 @@ const Investments = () => {
         }
       }
     }
-    fetchNewsData();
+
     fetchChartData();
-  }, [user_id, newsRender, chartRender]);
+    console.log("page");
+    console.log(chartData);
+    
+  }, [user_id, chartRender]);
+
+  useEffect(() => {
+    const fetchTableData = async () => {
+      console.log(user_id);
+      if(user_id) {
+        try {
+          const response = await axios.post('http://127.0.0.1:5328/get_portfolio_table', {user_id: user_id});
+          console.log(response.data)
+          setTableData(response.data.data);
+          setViewTable(true);
+        } catch (error) {
+          console.error('Network/Request Error:', error);
+        }
+      }
+    }
+    fetchTableData();
+    console.log("page");
+    console.log(chartData);
+    
+  }, [user_id, tableRender]);
+
+  useEffect(() => {
+    const fetchNewsData = async () => {
+      console.log(user_id);
+      if(user_id) {
+        try {
+          const response = await axios.post('http://127.0.0.1:5328/get_news', {user_id: user_id});
+          console.log(response.data)
+          setNewsData(response.data.data);
+          setViewNews(true);
+        } catch (error) {
+          console.error('Network/Request Error:', error);
+        }
+      }
+    }
+    fetchNewsData();
+    console.log("page");
+    console.log(newsData);
+    
+  }, [user_id, newsRender]);
 
   const handleSignOutClick = () => {
     localStorage.removeItem('jwt_token');
@@ -96,15 +130,17 @@ const Investments = () => {
                       <AddInvestment />
                     </div>
                     <div className="my-3">
-                      <AddInvestment />
+                      <AddInvestments />
                     </div>
                     <div className="mt-3">
-                      <Button variant="contained" onClick={() => setChartRender(chartRender + 1)} className="bg-blue-600 w-60">Refresh</Button>
+                      <Button variant="contained" onClick={() => {setChartRender(chartRender + 1)
+                                                                  setTableRender(tableRender + 1)
+                                                                  setNewsRender(newsRender + 1)}} className="bg-blue-600 w-60">Refresh</Button>
                     </div>
                   </div>  
                 </div>
                 <div className="pb-3">
-                  <StockTable />
+                  <StockTable tableData={tableData} />
                 </div>
               </div>
             </Card>
