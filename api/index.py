@@ -85,7 +85,6 @@ def new_expenses():
             date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]), 0, 0, 0)
             data.append({"name": row[0], "cost": int(row[1]), "date": date, "user_id": user_id})
             names.append(row[0])
-        print(data)
     os.remove(filepath)
 
     categories = get_category_list(names)
@@ -162,21 +161,50 @@ def get_db():
         db_client = MongoClient(uri, tlsCAFile=certifi.where())
     return db_client.pfin_db
 
-# def new_stock():
-#     db = get_db()
-#     expense_data = request.get_json()
-#     user_id = expense_data["user_id"]
-#     parsed_date = expense_data["date"].split("-")
-#     parsed_time = expense_data.get("time", "00:00").split(":")
-#     date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]),
-#                              int(parsed_time[0]), int(parsed_time[1]), 0)
-#     result = db["stocks"].insert_one({"user_id": user_id, "name": name, "cost": cost, "date": date, "category": category})
+@app.route("/new_stock", methods=['POST'])
+def new_stock():
+    db = get_db()
+    stock_data = request.get_json()
+    user_id = stock_data["user_id"]
+    ticker = stock_data["ticker"]
+    quantity = stock_data["quantity"]
+    # Add get name, as well, later?
+    parsed_date = stock_data["date"].split("-")
+    parsed_time = stock_data.get("time", "00:00").split(":")
+    date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]),
+                             int(parsed_time[0]), int(parsed_time[1]), 0)
+    result = db["stocks"].insert_one({"user_id": user_id, "ticker": ticker,
+                                      "quantity": quantity, "date_bought": date})
 
-#     if result.acknowledged:
-#         return {"success": True}
-#     return {"success": False}
+    if result.acknowledged:
+        return {"success": True}
+    return {"success": False}
 
-# def new_stocks():
+@app.route("/new_stocks", methods=['POST'])
+def new_stocks():
+    db = get_db()
 
+    user_id = request.form['user_id']
+    uploaded_file = request.files['file']
+    filepath = os.path.join("uploaded_files", uploaded_file.filename)
+    uploaded_file.save(filepath)
 
+    data = []
+    with open(filepath, 'r', encoding='utf-8-sig') as file:
+        csv_file = csv.reader(file)
+        for row in csv_file:
+            if not row[0]:
+                continue
+            parsed_date = row[2].split("-")
+            parsed_time = row[3].split(":")
+            print(parsed_time)
+            date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]),
+                                     int(parsed_time[0]), int(parsed_time[1]), 0)
+            data.append({"user_id": user_id, "ticker": row[0], "quantity": float(row[1]), "date_bought": date})
+    os.remove(filepath)
 
+    if data:
+        result = db["stocks"].insert_many(data)
+        if result.acknowledged:
+            return {"success": True}
+    return {"success": False}
