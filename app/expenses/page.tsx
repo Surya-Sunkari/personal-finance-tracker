@@ -19,6 +19,8 @@ const Expenses = () => {
   const [chartRender, setChartRender] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [viewChart, setViewChart] = useState(false);
+  const [recommendations, setRecommendations] = useState([]);
+  const [showRecommendations, setShowRecommendations] = useState(false);
   
   const router = useRouter();
 
@@ -61,6 +63,27 @@ const Expenses = () => {
     router.push('/signIn');
   }
 
+  const handleGenerateRecommendations = async () => {
+    try {
+      
+      console.log(user_id);
+      const response = await axios.post('http://127.0.0.1:5328/get_recommendations', {user_id: user_id});
+  
+      if (response.status === 200) {
+          var unparsedMessage = response.data.data;
+          console.log(unparsedMessage);
+          const blocks = unparsedMessage.split(/\n(?=Spending Analysis:|Recommendations:)/g);
+          const parsedBlocks = blocks.map(block => block.trim());
+          setRecommendations(parsedBlocks)
+          setShowRecommendations(true);
+      } else {
+          console.error('Error:', response.data);
+      }
+    } catch (error) {
+        console.error('Network/Request Error:', error);
+    }
+  }
+
   
 
   return (
@@ -93,9 +116,14 @@ const Expenses = () => {
                 </div>
               </div>
             </Card>
-            <Card className=" w-1/3 h-full bg-slate-200 rounded-3xl  m-3 shadow-lg border-2 border-black">
-              
-
+            <Card className=" w-1/3 h-full bg-slate-200 rounded-3xl  m-3 shadow-lg border-2 border-black flex flex-col justify-between items-center ">
+              <h1 className="text-center text-black font-bold text-2xl py-4 ">AI Expenses Analysis</h1>
+              <div className="text-black text-left px-3">
+                {!showRecommendations ? "Press \"Generate Recommendations\" to get started!" : <div><p className="py-3">{recommendations[0]}</p><hr /><p className="py-3">{recommendations[1]}</p></div>}
+              </div>
+              <div className="pb-6">
+                <Button variant="contained" onClick={handleGenerateRecommendations} className="bg-blue-600 text-center">Generate Recommendations</Button>
+              </div>
             </Card>
           </div>
           

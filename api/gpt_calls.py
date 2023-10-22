@@ -89,5 +89,3 @@ personal_expenses = [
 
 # Convert the list to a string
 expense_string = "\n".join([f"{item} ({category}): ${price:.2f} - {date}" for item, category, price, date in personal_expenses])
-
-print(get_recommendation(expense_string))

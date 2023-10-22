@@ -45,26 +45,30 @@ const AddExpense = () => {
     const handleClose = () => setOpen(false);
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+    
         const formData = new FormData();
         const selectedFile = fileInputRef.current.files[0];
         formData.append('file', selectedFile);
-        // formData.append('file', event.target.files[0]);
         formData.append('user_id', userId);
-
+    
         try {
-       
-            const response = await axios.post('http://127.0.0.1:5328/new_expenses', formData, {headers: {'Content-Type': 'multipart/form-data'}});
-        
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            };
+    
+            const response = await axios.post('http://127.0.0.1:5328/new_expenses', formData, config);
+    
             if (response.status === 200) {
-                if(response.data.success) {
-                    console.log("expenses added");
+                if (response.data.success) {
+                    console.log("Expenses added");
                     handleClose();
                     toast.success("Expenses added!", {
                         position: toast.POSITION.TOP_CENTER
                     });
                 } else {
-                    console.error('Expenses Adding Failed', response.data); 
+                    console.error('Expenses Adding Failed', response.data);
                 }
             } else {
                 toast.error("Error!", {
@@ -79,6 +83,7 @@ const AddExpense = () => {
             console.error('Network/Request Error:', error);
         }
     };
+    
 
     return (
         <div>
