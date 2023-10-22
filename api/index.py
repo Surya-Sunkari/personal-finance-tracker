@@ -7,6 +7,7 @@ import csv
 import os
 import jwt;
 from flask_cors import CORS
+import yfinance as yf
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -171,12 +172,23 @@ def new_stock():
     user_id = stock_data["user_id"]
     ticker = stock_data["ticker"]
     quantity = stock_data["quantity"]
-    # Add get name, as well, later?
+
+    # check if stock already exists
+    stock = db["stocks"].find_one({"user_id": user_id, "ticker": ticker})
+    if stock is not None:
+        new_amt = stock["quantity"] + quantity
+        result = db["stocks"].update_one({"user_id": user_id, "ticker": ticker},
+                                         {"$set": {'quantity': new_amt}})
+        if result.acknowledged:
+            return {"success": True}
+        return {"success": False}
+
     parsed_date = stock_data["date"].split("-")
     parsed_time = stock_data.get("time", "00:00").split(":")
     date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]),
                              int(parsed_time[0]), int(parsed_time[1]), 0)
     result = db["stocks"].insert_one({"user_id": user_id, "ticker": ticker,
+                                      "name": get_stock_name(ticker),
                                       "quantity": quantity, "date_bought": date})
 
     if result.acknowledged:
@@ -196,14 +208,21 @@ def new_stocks():
     with open(filepath, 'r', encoding='utf-8-sig') as file:
         csv_file = csv.reader(file)
         for row in csv_file:
-            if not row[0]:
+            ticker = row[0]
+            if not ticker:
                 continue
+            stock = db["stocks"].find_one({"user_id": user_id, "ticker": ticker})
+            if stock is not None:
+                new_amt = stock["quantity"] + float(row[1])
+                db["stocks"].update_one({"user_id": user_id, "ticker": ticker},
+                                        {"$set": {'quantity': new_amt}})
+                continue
+                
             parsed_date = row[2].split("-")
             parsed_time = row[3].split(":")
-            print(parsed_time)
             date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]),
                                      int(parsed_time[0]), int(parsed_time[1]), 0)
-            data.append({"user_id": user_id, "ticker": row[0], "quantity": float(row[1]), "date_bought": date})
+            data.append({"user_id": user_id, "ticker": ticker, "name": get_stock_name(ticker), "quantity": float(row[1]), "date_bought": date})
     os.remove(filepath)
 
     if data:
@@ -211,3 +230,95 @@ def new_stocks():
         if result.acknowledged:
             return {"success": True}
     return {"success": False}
+
+@app.route("/sell_stock", methods=['POST'])
+def sell_stock():
+    db = get_db()
+
+    stock_data = request.get_json()
+    user_id = stock_data["user_id"]
+    ticker = stock_data["ticker"]
+    sell_all = stock_data.get("sell_all", False)
+    sell_amt = stock_data.get("sell_amt", 0)
+    stock = db["stocks"].find_one({"user_id": user_id, "ticker": ticker})
+    if stock is None:
+        return {"success": False}
+
+    if sell_all:
+        db["stocks"].delete_one({"user_id": user_id, "ticker": ticker})
+    else:
+        new_amt = stock["quantity"] - sell_amt
+        if new_amt <= 0:
+            db["stocks"].delete_one({"user_id": user_id, "ticker": ticker})
+        else:
+            db["stocks"].update_one({"user_id": user_id, "ticker": ticker},
+                                    {"$set": {'quantity': new_amt}})
+    return {"success": True}
+
+@app.route("/stock_news", methods=['POST'])
+def stock_news():
+    db = get_db()
+
+    stock_data = request.get_json()
+    ticker = stock_data["ticker"]
+    
+    news = get_stock_news(ticker)
+    data = []
+    for i in range(min(5, len(news))):
+        article = news[i]
+        data.append({"title": article["title"], "link": article["link"],
+                     "time": datetime.datetime.utcfromtimestamp(article["providerPublishTime"])})
+
+    return {"data": data}
+
+@app.route("/get_portfolio_worth", methods=['POST'])
+def get_portfolio_worth():
+    db = get_db()
+
+    stock_data = request.get_json()
+    user_id = stock_data["user_id"]
+    stocks = db["stocks"].find({"user_id": user_id})
+
+    data = []
+    total_worth = 0
+    i = 0
+    for stock in stocks:
+        ticker = stock["ticker"]
+        quantity = stock["quantity"]
+        total_value = get_stock_price(ticker) * quantity
+        total_worth += total_value
+        data.append({"id": i, "label": ticker, "value": total_value})
+        i += 1
+    return {"total_value": total_worth, "data": data}
+
+@app.route("/get_portfolio_table", methods=['POST'])
+def get_portfolio_table():
+    db = get_db()
+
+    stock_data = request.get_json()
+    user_id = stock_data["user_id"]
+    stocks = db["stocks"].find({"user_id": user_id})
+
+    data = []
+    i = 0
+    for stock in stocks:
+        ticker = stock["ticker"]
+        quantity = stock["quantity"]
+        price = get_stock_price(ticker)
+        total_value = price * quantity
+        data.append({"id": i, "ticker": ticker, "quantity": quantity, "price": price, "value": total_value})
+        i += 1
+    return {"data": data}
+
+
+def get_stock_price(ticker):
+    stock = yf.Ticker(ticker)
+    return stock.info['currentPrice']
+
+def get_stock_name(ticker):
+    stock = yf.Ticker(ticker)
+    return stock.info['longName']
+
+def get_stock_news(ticker):
+    stock = yf.Ticker(ticker)
+    return stock.news
