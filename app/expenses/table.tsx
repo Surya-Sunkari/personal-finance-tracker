@@ -43,6 +43,14 @@ function PowerTable(): JSX.Element {
   const [tableData, setTableData] = useState([]);
   const [user_id, setUserId] = useState('');
 
+  const config = {
+    headers: {
+      'Content-Type': 'application/json', // Set the appropriate content type
+      // 'Access-Control-Allow-Origin': 'http://localhost:3000', // Your allowed origin
+    },
+  };
+  
+  
 
 
   useEffect(() => {
@@ -55,10 +63,10 @@ function PowerTable(): JSX.Element {
         const user_id = jwt.decode(token).user_id;
         console.log(user_id);
         setUserId(user_id);
-        axios.options('http://127.0.0.1:5328/get_expenses').then( async (response) => {
-          const res = await axios.post('http://127.0.0.1:5328/get_expenses', {user_id: user_id});
+        axios.options('http://127.0.0.1:5328/get_expenses', null, config).then( async (response) => {
+          const res = await axios.post('http://127.0.0.1:5328/get_expenses', {user_id: user_id}, config);
           console.log(res.data);
-          setTableData(res.data);
+          setTableData(res.data.data);
         }
 
         )

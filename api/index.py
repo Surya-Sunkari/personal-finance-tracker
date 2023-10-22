@@ -14,7 +14,7 @@ from pymongo.server_api import ServerApi
 
 app = Flask(__name__)
 db_client = None
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["POST", "OPTIONS"], "allow_headers": "content-type"}})
 
 @app.route("/create_user", methods=['POST'])
 def create_user():
@@ -271,7 +271,7 @@ def stock_news():
 
     return {"data": data}
 
-@app.route("/get_portfolio_worth", methods=['POST'])
+@app.route("/get_portfolio_worth", methods=['POST', 'OPTIONS'])
 def get_portfolio_worth():
     db = get_db()
 
@@ -291,7 +291,7 @@ def get_portfolio_worth():
         i += 1
     return {"total_value": total_worth, "data": data}
 
-@app.route("/get_portfolio_table", methods=['POST'])
+@app.route("/get_portfolio_table", methods=['POST', 'OPTIONS'])
 def get_portfolio_table():
     db = get_db()
 
