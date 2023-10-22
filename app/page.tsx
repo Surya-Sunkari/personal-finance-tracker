@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
-import { Router } from "next/router";
 import Link from "next/link";
 import {AiOutlineStock} from 'react-icons/ai';
 import {BiSolidBadgeDollar} from 'react-icons/bi';
@@ -42,9 +41,9 @@ const Home = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
+    <div className="h-screen flex flex-col bg-gradient-to-r justify-between from-slate-800 via-slate-700 to-slate-800">
       <div className="px-7 py-5 flex justify-end">
-          <p className="  text-xl text-white cursor-pointer text-right" onClick={handleSignOutClick}>Sign Out</p>
+          <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={handleSignOutClick}>Sign Out</p>
       </div>
       <div className=" h-5/6 flex flex-col w-screen justify-center items-center m-0 p-0">
           <div className=" px-8 flex flex-col justify-center items-center">
@@ -87,7 +86,7 @@ const Home = () => {
               </div>
           </div>
       </div>
-      <h3 className=" text-white font-semibold pt-4 text-center">Created for HackTX by Shray Jain, Surya Sunkari, and Tarun Mohan</h3>
+      <h3 className=" text-white font-semibold py-4 text-center">Created for HackTX by Shray Jain, Surya Sunkari, and Tarun Mohan</h3>
     </div>
   );
 };
