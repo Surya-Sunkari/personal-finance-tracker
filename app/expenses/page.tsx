@@ -57,13 +57,16 @@ const Expenses = () => {
   
 
   return (
+    <div>
     <div className="h-screen flex flex-col justify-between bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
       <div className="px-7 py-5 flex justify-end">
           <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={handleSignOutClick}>Sign Out</p>
       </div>
       {viewChart ? <ExpenseChart title="Your Expenses:" chartData={chartData} chartHeight={200} chartWidth={400} blockHeight={240} blockWidth={384}/> : null}
       <AddExpense />
-            <h3 className=" text-white font-semibold py-4 text-center">Created for HackTX by Shray Jain, Surya Sunkari, and Tarun Mohan</h3>
+      <h3 className=" text-white font-semibold py-4 text-center">Created for HackTX by Shray Jain, Surya Sunkari, and Tarun Mohan</h3>
+    </div>
+    <PowerTable></PowerTable>
     </div>
     
   );
