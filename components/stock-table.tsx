@@ -11,18 +11,18 @@ const columns: GridColDef[] = [
   {
     field: 'ticker',
     headerName: 'Ticker',
-    width: 230,
+    width: 175,
   },
   {
     field: 'quantity',
     headerName: 'Quantity',
-    width: 230,
+    width: 175,
     sortComparator: (a, b) => parseInt(a) - parseInt(b),
   },
   {
     field: 'price',
     headerName: 'Price',
-    width: 230,
+    width: 175,
     sortComparator: (a, b) => parseFloat(a) - parseFloat(b),
     valueFormatter: (params) =>
       new Intl.NumberFormat('en-US', {
@@ -33,7 +33,7 @@ const columns: GridColDef[] = [
   {
     field: 'value',
     headerName: 'Value',
-    width: 230,
+    width: 175,
     sortComparator: (a, b) => parseInt(a) - parseInt(b),
     valueFormatter: (params) =>
     new Intl.NumberFormat('en-US', {
@@ -88,10 +88,11 @@ function StockTable(): JSX.Element {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
+        height: '45vh',
+        marginTop: '20px'
       }}
     >
-      <Box sx={{ height: 400, width: '80%' }}>
+      <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={tableData}
           columns={columns}

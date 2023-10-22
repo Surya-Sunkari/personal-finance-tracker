@@ -130,7 +130,7 @@ const Expenses = () => {
       <div className="h-screen flex flex-col justify-between bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
         <div className="px-7 py-5 flex justify-between">
           <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={() => router.push("/")}>Home</p>
-          <p className="  text-3xl text-white font-semibold text-right " >Cash Guardian</p>
+          <p className="  text-3xl text-white font-semibold text-right " >Cash Guardian: Expenses</p>
           <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={handleSignOutClick}>Sign Out</p>
         </div>
           <div className="w-full h-full flex justify-center items-center">
@@ -140,7 +140,7 @@ const Expenses = () => {
                   <PowerTable tableData={tableData} />
                 </div>
                 <div className=" h-[5/8] flex justify-evenly items-center w-full">
-                  {viewChart ? <ExpenseChart title="Your Expenses:" chartData={chartData} chartHeight={150} chartWidth={500} blockHeight={200} blockWidth={375}/> : null}
+                  {viewChart ? <ExpenseChart title="Expense Analysis" chartData={chartData} chartHeight={150} chartWidth={500} blockHeight={200} blockWidth={375} bgColor={"bg-red-200"}/> : null}
                   <div className="flex flex-col justify-center items-center">
                     <div className="mb-3">
                       <AddExpense />
@@ -169,11 +169,6 @@ const Expenses = () => {
             </Card>
           </div>
           
-
-        
-
-        {/* {viewChart ? <ExpenseChart title="Your Expenses:" chartData={chartData} chartHeight={200} chartWidth={400} blockHeight={240} blockWidth={384}/> : null} */}
-        {/* <AddExpense /> */}
         <h3 className=" text-white font-semibold py-4 text-center">Created for HackTX by Shray Jain, Surya Sunkari, and Tarun Mohan</h3>
       </div>
     
