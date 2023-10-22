@@ -25,9 +25,35 @@ const SignUp = () => {
         setShowPasswordMessage(true);
     } else {
         //TODO: automatically sign in and route to home page instead of routing to sign in page
-        console.log("passwords matched")
-        setShowPasswordMessage(false);
-        router.push("/signIn");
+        try {
+            const user_data = {
+                first_name: firstName,
+                last_name: lastName,
+                username: email,
+                password: password,
+            };
+        
+            const response = await axios.post('http://127.0.0.1:5328/create_user', user_data);
+        
+            if (response.status === 200) {
+                if(response.data.success) {
+                    const token = response.data.token;
+                    localStorage.setItem('jwt_token', token);
+                    setShowPasswordMessage(false);
+                    router.push('/');
+                } else {
+                    setShowPasswordMessage(true);
+                    console.error('Username Already in User', response.data);
+                }
+            } else {
+                setShowPasswordMessage(true);
+                console.error('Error:', response.data);
+            }
+        } catch (error) {
+            setShowPasswordMessage(true);
+            // Handle any network or request error
+            console.error('Network/Request Error:', error);
+        }
     }
     
   };
@@ -77,7 +103,7 @@ const SignUp = () => {
                 />
             </div>
             <div className=" flex flex-col justify-center items-center">
-                {showPasswordMessage ? <p className=" text-red-700 text-sm pb-2">Passwords must match!</p> : null}
+                {showPasswordMessage ? <p className=" text-red-700 text-sm pb-2">Username already in use!</p> : null}
                 <button
                     className="bg-sky-900 text-white rounded-full py-2 px-4 hover:bg-sky-700 transition duration-300"
                     onClick={handleSignUp}

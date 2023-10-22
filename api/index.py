@@ -4,6 +4,7 @@ import certifi
 import datetime
 import csv
 import os
+import jwt;
 from flask_cors import CORS
 
 from pymongo.mongo_client import MongoClient
@@ -15,6 +16,7 @@ CORS(app)
 
 @app.route("/create_user", methods=['POST'])
 def create_user():
+    import config
     db = get_db()
     user_data = request.get_json()
 
@@ -26,10 +28,13 @@ def create_user():
         return {"success": False, "message": "Username already in use"}
     inserted = db["users"].insert_one({"first_name": first_name, "last_name": last_name,
                                        "username": username, "password": password})
-    return {"success": True, "user_id": str(inserted.inserted_id)}
+    encoded_jwt = jwt.encode({"user_id": str(inserted.inserted_id)}, config.jwt_secret, algorithm="HS256")
+
+    return {"success": True, "token": encoded_jwt}
 
 @app.route("/login", methods=['POST'])
 def login():
+    import config
     db = get_db()
     user_data = request.get_json()
     username = user_data["username"]
@@ -40,8 +45,10 @@ def login():
         return {"success": False, "message": "Invalid username"}
     if user["password"] != password:
         return {"success": False, "message": "Invalid password"}
+    
+    encoded_jwt = jwt.encode({"user_id": str(user["_id"])}, config.jwt_secret, algorithm="HS256")
 
-    return {"success": True, "user_id": str(user["_id"])}
+    return {"success": True, "token": encoded_jwt}
 
 @app.route("/new_expense", methods=['POST'])
 def new_expense():
