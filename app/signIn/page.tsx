@@ -50,7 +50,7 @@ const Login = () => {
     }
 
     return (
-        <div className="flex h-screen w-screen justify-center items-center m-0 p-0 bg-gradient-to-tr from-blue-100 via-orange-100 to-orange-200">
+        <div className="flex h-screen w-screen justify-center items-center m-0 p-0 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
         <div className="w-[800px] h-[500px] min-h-min min-w-min bg-stone-50 p-6 rounded-3xl shadow-lg flex flex-col justify-evenly ">
             <div>
                 <div className="text-center">

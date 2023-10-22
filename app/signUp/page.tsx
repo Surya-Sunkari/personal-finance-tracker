@@ -68,7 +68,7 @@ const SignUp = () => {
   }, []);
 
   return (
-    <div className="flex h-screen w-screen justify-center items-center m-0 p-0 bg-gradient-to-tr from-blue-100 via-orange-100 to-orange-200">
+    <div className="flex h-screen w-screen justify-center items-center m-0 p-0 bg-gradient-to-r  from-slate-800 via-slate-700 to-slate-800">
         <div className="w-[800px] h-[650px] min-h-min min-w-min bg-stone-50 p-6 rounded-3xl shadow-lg flex flex-col justify-evenly ">
             <div className="pb-5">
                 <div className="text-center">
@@ -77,32 +77,32 @@ const SignUp = () => {
             </div>
             <div className="mb-3 mx-20 flex justify-center items-center">
                 <div className="w-1/2 pr-4">
-                    <label className="block text-sm font-semibold mb-2 text-black dark:text-white">First Name:</label>
+                    <label className="block text-sm font-semibold mb-2 text-black">First Name:</label>
                     <input type="email" className="py-3 px-4 block w-full border border-stone-300 rounded-full text-sm shadow-lg" 
                         value={firstName} onChange={(e) => setFirstName(e.target.value)} 
                     />
                 </div>
                 <div className="w-1/2 pl-4">
-                    <label className="block text-sm font-semibold mb-2 text-black dark:text-white">Last Name:</label>
+                    <label className="block text-sm font-semibold mb-2 text-black">Last Name:</label>
                     <input type="email" className="py-3 px-4 block w-full border border-stone-300 rounded-full text-sm shadow-lg" 
                         value={lastName} onChange={(e) => setLastName(e.target.value)} 
                     />
                 </div>
             </div>
             <div className="mb-3 mx-20">
-                <label className="block text-sm font-semibold mb-2 text-black dark:text-white">Email:</label>
+                <label className="block text-sm font-semibold mb-2 text-black">Email:</label>
                 <input type="text" className="py-3 px-4 block w-full border border-stone-300 rounded-full text-sm shadow-lg" 
                     value={email} onChange={(e) => setEmail(e.target.value)} 
                 />
             </div>
             <div className="mb-3 mx-20">
-                <label className="block text-sm font-semibold mb-2 text-black dark:text-white">Password:</label>
+                <label className="block text-sm font-semibold mb-2 text-black">Password:</label>
                 <input type="password" className="py-3 px-4 block w-full border border-stone-300 rounded-full text-sm shadow-lg" 
                     value={password} onChange={(e) => setPassword(e.target.value)} 
                 />
             </div>
             <div className="mb-10 mx-20">
-                <label className="block text-sm font-semibold mb-2 text-black dark:text-white">Confirm Password:</label>
+                <label className="block text-sm font-semibold mb-2 text-black">Confirm Password:</label>
                 <input type="password" className="py-3 px-4 block w-full border border-stone-300 rounded-full text-sm shadow-lg" 
                     value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} 
                 />

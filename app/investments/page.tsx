@@ -128,7 +128,7 @@ const Investments = () => {
               <div className=" flex flex-col justify-between items-center w-full h-full">
                 <div className=" h-[5/8] flex justify-evenly items-center w-full">
                   {viewChart ? <ExpenseChart title="Portfolio Analysis" chartData={chartData} chartHeight={150} chartWidth={600} blockHeight={400} blockWidth={100} bgColor={"bg-blue-200"}/> : null}
-                  <div className="flex flex-col justify-center items-center">
+                  <div className="flex flex-col justify-center items-center mr-2">
                     <div className="mb-3">
                       <AddInvestment />
                     </div>
