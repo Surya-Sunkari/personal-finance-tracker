@@ -19,7 +19,10 @@ import requests
 
 app = Flask(__name__)
 db_client = None
+CORS(app)
+# CORS(app, resources={r"/new_expenses": {"origins": "http://localhost:3000"}})
 CORS(app, resources={r"/*": {"origins": "*", "methods": ["POST", "OPTIONS"], "allow_headers": "content-type"}})
+
 
 @app.route("/create_user", methods=['POST'])
 def create_user():
@@ -337,7 +340,6 @@ def get_portfolio_table():
 
 def get_stock_price(ticker):
     stock = yf.Ticker(ticker)
-    print(stock.info)
     return stock.info['currentPrice']
 
 def get_stock_name(ticker):

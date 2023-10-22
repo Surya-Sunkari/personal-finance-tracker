@@ -10,17 +10,17 @@ const columns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Name',
-    width: 230,
+    width: 175,
   },
   {
     field: 'category',
     headerName: 'Category',
-    width: 230,
+    width: 175,
   },
   {
     field: 'cost',
     headerName: 'Cost',
-    width: 230,
+    width: 175,
     sortComparator: (a, b) => parseFloat(a) - parseFloat(b),
     valueFormatter: (params) =>
       new Intl.NumberFormat('en-US', {
@@ -31,7 +31,7 @@ const columns: GridColDef[] = [
   {
     field: 'date',
     headerName: 'Date',
-    width: 230,
+    width: 175,
     sortComparator: (a, b) => new Date(a) - new Date(b),
     valueFormatter: (params) =>
       new Intl.DateTimeFormat('en-US').format(new Date(params.value)),
@@ -86,10 +86,11 @@ function PowerTable(): JSX.Element {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
+        height: '45vh',
+        marginTop: '20px'
       }}
     >
-      <Box sx={{ height: 400, width: '80%' }}>
+      <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={tableData}
           columns={columns}

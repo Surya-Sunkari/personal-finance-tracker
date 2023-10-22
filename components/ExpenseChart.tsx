@@ -10,7 +10,7 @@ const ExpenseChart = ({title, chartData, chartHeight, chartWidth, blockHeight, b
     });
 
     return (
-        <div className="bg-white w-96 h-60 pb-3 m-5 flex flex-col justify-center items-center rounded-2xl">
+        <div className={"bg-white m-5 flex flex-col justify-center items-center rounded-2xl w-[" + blockWidth + "] h-[" + blockHeight + "]"}>
             <h1 className="text-xl text-black py-3 font-bold">{title}</h1>
             <PieChart
                 series={[

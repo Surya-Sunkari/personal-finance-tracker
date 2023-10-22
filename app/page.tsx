@@ -42,7 +42,8 @@ const Home = () => {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-r justify-between from-slate-800 via-slate-700 to-slate-800">
-      <div className="px-7 py-5 flex justify-end">
+      <div className="px-7 py-5 flex justify-between">
+          <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={() => router.push("/")}>Home</p>
           <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={handleSignOutClick}>Sign Out</p>
       </div>
       <div className=" h-5/6 flex flex-col w-screen justify-center items-center m-0 p-0">
