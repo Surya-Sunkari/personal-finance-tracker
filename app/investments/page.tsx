@@ -110,7 +110,7 @@ const Investments = () => {
   }
   return (
     <div>
-      <div className="h-screen flex flex-col justify-between bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
+      <div className="h-full flex flex-col justify-between bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
         <div className="px-7 py-5 flex justify-between">
           <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={() => router.push("/")}><HiHome size={50}/></p>
           <p className="  text-3xl text-white font-semibold text-right " >Cash Guardian: Investments</p>
