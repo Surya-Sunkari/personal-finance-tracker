@@ -101,7 +101,7 @@ const Expenses = () => {
                   <PowerTable />
                 </div>
                 <div className=" h-[5/8] flex justify-evenly items-center w-full">
-                  {viewChart ? <ExpenseChart title="Your Expenses:" chartData={chartData} chartHeight={150} chartWidth={500} blockHeight={200} blockWidth={375}/> : null}
+                  {viewChart ? <ExpenseChart title="Expense Analysis" chartData={chartData} chartHeight={150} chartWidth={500} blockHeight={200} blockWidth={375}/> : null}
                   <div className="flex flex-col justify-center items-center">
                     <div className="mb-3">
                       <AddExpense />
@@ -127,11 +127,6 @@ const Expenses = () => {
             </Card>
           </div>
           
-
-        
-
-        {/* {viewChart ? <ExpenseChart title="Your Expenses:" chartData={chartData} chartHeight={200} chartWidth={400} blockHeight={240} blockWidth={384}/> : null} */}
-        {/* <AddExpense /> */}
         <h3 className=" text-white font-semibold py-4 text-center">Created for HackTX by Shray Jain, Surya Sunkari, and Tarun Mohan</h3>
       </div>
     

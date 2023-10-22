@@ -89,7 +89,7 @@ const AddInvestment = () => {
     return (
         <div>
             <ToastContainer />
-            <Button variant="contained" onClick={handleOpen} className="bg-blue-600">Manually Add Investmente</Button>
+            <Button variant="contained" onClick={handleOpen} className="bg-blue-600">Manually Add Investment</Button>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"

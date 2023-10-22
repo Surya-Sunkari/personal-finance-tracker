@@ -10,17 +10,19 @@ const ExpenseChart = ({title, chartData, chartHeight, chartWidth, blockHeight, b
     });
 
     return (
-        <div className={"bg-white m-5 flex flex-col justify-center items-center rounded-2xl w-[" + blockWidth + "] h-[" + blockHeight + "]"}>
-            <h1 className="text-xl text-black py-3 font-bold">{title}</h1>
-            <PieChart
-                series={[
-                    {
-                        data: chartData.data,
-                    },
-                ]}
-                width={chartWidth}
-                height={chartHeight}
-            />
+        <div className={"bg-white m-5 flex flex-col justify-center items-center rounded-2xl w-[" + blockWidth + "px] h-[" + blockHeight + "px]"}>
+            <div className=" w-1/2 flex flex-col justify-center items-center">
+                <h1 className="text-xl text-black py-3 font-bold">{title}</h1>
+                <PieChart className="flex justify-center items-center"
+                    series={[
+                        {
+                            data: chartData.data,
+                        },
+                    ]}
+                    width={chartWidth}
+                    height={chartHeight}
+                />
+            </div> 
         </div>
     );
 };
