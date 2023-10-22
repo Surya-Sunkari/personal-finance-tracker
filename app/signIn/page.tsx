@@ -22,7 +22,9 @@ const Login = () => {
                 username: email,
                 password: password,
             };
-        
+
+            console.log(loginData);
+
             const response = await axios.post('http://127.0.0.1:5328/login', loginData);
         
             if (response.status === 200) {

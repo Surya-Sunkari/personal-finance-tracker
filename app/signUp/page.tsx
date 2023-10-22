@@ -115,7 +115,7 @@ const SignUp = () => {
                 >
                     <h2 className=" mx-8 font-semibold">Sign up</h2>
                 </button>
-                <p className="pt-4">Already have an account? <Link className=" text-blue-700"  href="/signUp">Sign in</Link> instead.</p>
+                <p className="pt-4">Already have an account? <Link className=" text-blue-700"  href="/signIn">Sign in</Link> instead.</p>
             </div>
         </div>
     </div>

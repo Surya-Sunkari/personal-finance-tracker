@@ -5,9 +5,9 @@ import datetime
 from datetime import timedelta
 import csv
 import os
-import jwt;
 from flask_cors import CORS
 import yfinance as yf
+import jwt
 import gpt_calls
 import ast
 from gpt_calls import categorize_single, categorize_multiple, get_recommendation
@@ -53,6 +53,7 @@ def create_user():
 @app.route("/login", methods=['POST'])
 def login():
     import config
+    import jwt
     db = get_db()
     user_data = request.get_json()
     username = user_data["username"]
