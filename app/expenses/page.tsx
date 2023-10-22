@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import ExpenseChart from "@/components/ExpenseChart";
+import AddExpense from "@/components/AddExpense";
 
 const Expenses = () => {
   const [user_id, setUserId] = useState('');
@@ -60,6 +61,7 @@ const Expenses = () => {
           <p className="  text-2xl text-white font-semibold cursor-pointer text-right hover:scale-110 transition" onClick={handleSignOutClick}>Sign Out</p>
       </div>
       {viewChart ? <ExpenseChart title="Your Expenses:" chartData={chartData} chartHeight={200} chartWidth={400} blockHeight={240} blockWidth={384}/> : null}
+      <AddExpense />
       <h3 className=" text-white font-semibold py-4 text-center">Created for HackTX by Shray Jain, Surya Sunkari, and Tarun Mohan</h3>
     </div>
   );

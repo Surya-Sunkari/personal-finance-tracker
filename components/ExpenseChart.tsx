@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import { PieChart } from "@mui/x-charts";
 
 const ExpenseChart = ({title, chartData, chartHeight, chartWidth, blockHeight, blockWidth}) => {
-    const [user_id, setUserId] = useState('');
-
 
     useEffect(() => {
         console.log("expense");
