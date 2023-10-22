@@ -8,9 +8,14 @@ import os
 import jwt;
 from flask_cors import CORS
 import yfinance as yf
+import gpt_calls
+import ast
+from gpt_calls import categorize_single, categorize_multiple, get_recommendation
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+
+import requests
 
 app = Flask(__name__)
 db_client = None
@@ -61,7 +66,7 @@ def new_expense():
     cost = expense_data["cost"]
     parsed_date = expense_data["date"].split("-")
     date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]), 0, 0, 0)
-    category = get_category(name)
+    category = categorize_single(name).capitalize()
     result = db["expenses"].insert_one({"user_id": user_id, "name": name, "cost": cost, "date": date, "category": category})
 
     if result.acknowledged:
@@ -88,9 +93,9 @@ def new_expenses():
             names.append(row[0])
     os.remove(filepath)
 
-    categories = get_category_list(names)
+    categories = ast.literal_eval(categorize_multiple(names))
     for i in range(len(data)):
-        data[i]["category"] = categories[i]
+        data[i]["category"] = categories[i].capitalize()
 
     if data:
         result = db["expenses"].insert_many(data)
@@ -148,15 +153,26 @@ def get_expenses():
         i += 1
     return {"data": result}
 
+@app.route("/get_recommendations", methods=['POST'])
+def get_recommendations():
+    db = get_db()
 
-def get_category(name):
-    return "Food"
+    expense_data = request.get_json()
+    user_id = expense_data["user_id"]
 
-def get_category_list(names):
-    list = []
-    for name in names:
-        list.append("Shopping")
-    return list
+    expenses = list(db["expenses"].find({"user_id": user_id}).sort("date"))
+    result = []
+    for expense in expenses:
+        expense_result = []
+        expense_result.append(expense["name"])
+        expense_result.append(expense["category"])
+        expense_result.append(float(expense["cost"]))
+        expense_result.append(expense["date"].strftime('%B') + " " + expense["date"].strftime('%Y'))
+        result.append(expense_result)
+    expense_string = "\n".join([f"{item} ({category}): ${price:.2f} - {date}" for item, category, price, date in result])
+    print(expense_string)
+    return {"data": get_recommendation(expense_string)}
+
 
 def get_db():
     global db_client
@@ -260,12 +276,22 @@ def stock_news():
     db = get_db()
 
     stock_data = request.get_json()
-    ticker = stock_data["ticker"]
-    
-    news = get_stock_news(ticker)
+    user_id = stock_data["user_id"]
+    stocks = db["stocks"].find({"user_id": user_id})
+
     data = []
-    for i in range(min(5, len(news))):
-        article = news[i]
+    links = []
+    for stock in stocks:
+        i = 0
+        articles = get_stock_news(stock["ticker"])
+        article = articles[0]
+        while article["link"] in links or (stock["ticker"] not in article["title"] and stock["name"].split(" ")[0] not in article["title"]):
+            i += 1
+            if i == len(articles):
+                article = articles[0]
+                break
+            article = articles[i]
+        links.append(article["link"])
         data.append({"title": article["title"], "link": article["link"],
                      "time": datetime.datetime.utcfromtimestamp(article["providerPublishTime"])})
 
@@ -310,9 +336,9 @@ def get_portfolio_table():
         i += 1
     return {"data": data}
 
-
 def get_stock_price(ticker):
     stock = yf.Ticker(ticker)
+    print(stock.info)
     return stock.info['currentPrice']
 
 def get_stock_name(ticker):
