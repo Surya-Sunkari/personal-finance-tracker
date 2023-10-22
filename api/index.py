@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 import certifi
 import datetime
+from datetime import timedelta
 import csv
 import os
 from flask_cors import CORS
@@ -97,8 +98,45 @@ def category_costs():
     expense_data = request.get_json()
     user_id = expense_data["user_id"]
 
+    days = expense_data.get("days", 365000)
+    end_date = datetime.datetime.now()
+    start_date = end_date - timedelta(days=days)
 
+    pipeline = [
+        {
+            '$match': {
+                'user_id': user_id,
+                'date': {'$gte': start_date, '$lte': end_date}
+            }
+        },
+        {
+            '$group': {
+                '_id': '$category',
+                'total_cost': {'$sum': '$cost'}
+            }
+        }
+    ]
 
+    result = list(db["expenses"].aggregate(pipeline))
+
+    formatted_result = []
+    for i in range(len(result)):
+        formatted_result.append({"label": result[i]["_id"], "value": result[i]["total_cost"], "id": i})
+
+    return {"data": formatted_result}
+
+@app.route("/get_expenses", methods=['POST'])
+def get_expenses():
+    db = get_db()
+
+    expense_data = request.get_json()
+    user_id = expense_data["user_id"]
+
+    result = list(db["expenses"].find({"user_id": user_id}).sort("date"))
+    for dict in result:
+        del dict['_id']
+        del dict['user_id']
+    return {"data": result}
 
 
 def get_category(name):
@@ -116,3 +154,22 @@ def get_db():
         uri = "mongodb+srv://sbjain:OXALjd8aL4Z8OhtM@pfindb.2a6otno.mongodb.net/?retryWrites=true&w=majority"
         db_client = MongoClient(uri, tlsCAFile=certifi.where())
     return db_client.pfin_db
+
+# def new_stock():
+#     db = get_db()
+#     expense_data = request.get_json()
+#     user_id = expense_data["user_id"]
+#     parsed_date = expense_data["date"].split("-")
+#     parsed_time = expense_data.get("time", "00:00").split(":")
+#     date = datetime.datetime(int(parsed_date[0]), int(parsed_date[1]), int(parsed_date[2]),
+#                              int(parsed_time[0]), int(parsed_time[1]), 0)
+#     result = db["stocks"].insert_one({"user_id": user_id, "name": name, "cost": cost, "date": date, "category": category})
+
+#     if result.acknowledged:
+#         return {"success": True}
+#     return {"success": False}
+
+# def new_stocks():
+
+
+
