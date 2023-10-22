@@ -337,7 +337,6 @@ def get_portfolio_table():
 
 def get_stock_price(ticker):
     stock = yf.Ticker(ticker)
-    print(stock.info)
     return stock.info['currentPrice']
 
 def get_stock_name(ticker):
