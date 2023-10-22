@@ -38,47 +38,45 @@ const columns: GridColDef[] = [
   },
 ];
 
-function PowerTable(): JSX.Element {
+function PowerTable( {tableData} ): JSX.Element {
   const router = useRouter();
-  const [tableData, setTableData] = useState([]);
-  const [user_id, setUserId] = useState('');
 
-  const config = {
-    headers: {
-      'Content-Type': 'application/json', // Set the appropriate content type
-      // 'Access-Control-Allow-Origin': 'http://localhost:3000', // Your allowed origin
-    },
-  };
+  // const config = {
+  //   headers: {
+  //     'Content-Type': 'application/json', // Set the appropriate content type
+  //     // 'Access-Control-Allow-Origin': 'http://localhost:3000', // Your allowed origin
+  //   },
+  // };
   
   
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem('jwt_token');
-      if(!token) {
-        console.log("no token found, routing to sign in page");
-        router.push('/signIn');
-      } else {
-        const user_id = jwt.decode(token).user_id;
-        console.log(user_id);
-        setUserId(user_id);
-        axios.options('http://127.0.0.1:5328/get_expenses', null, config).then( async (response) => {
-          const res = await axios.post('http://127.0.0.1:5328/get_expenses', {user_id: user_id}, config);
-          console.log(res.data);
-          setTableData(res.data.data);
-        }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const token = localStorage.getItem('jwt_token');
+  //     if(!token) {
+  //       console.log("no token found, routing to sign in page");
+  //       router.push('/signIn');
+  //     } else {
+  //       const user_id = jwt.decode(token).user_id;
+  //       console.log(user_id);
+  //       setUserId(user_id);
+  //       axios.options('http://127.0.0.1:5328/get_expenses', null, config).then( async (response) => {
+  //         const res = await axios.post('http://127.0.0.1:5328/get_expenses', {user_id: user_id}, config);
+  //         console.log(res.data);
+  //         setTableData(res.data.data);
+  //       }
 
-        )
-        .catch(error => {
-          // Handle errors from the OPTIONS request
-          console.error('OPTIONS Request Error:', error);
-        });
-      }
-    }
-    fetchData();
+  //       )
+  //       .catch(error => {
+  //         // Handle errors from the OPTIONS request
+  //         console.error('OPTIONS Request Error:', error);
+  //       });
+  //     }
+  //   }
+  //   fetchData();
 
-  }, []);
+  // }, []);
 
   return (
     <div

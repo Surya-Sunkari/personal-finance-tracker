@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import PowerTable from "./table";
+import PowerTable from "../../components/table";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
@@ -19,6 +19,9 @@ const Expenses = () => {
   const [chartRender, setChartRender] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [viewChart, setViewChart] = useState(false);
+  const [tableRender, setTableRender] = useState(0);
+  const [tableData, setTableData] = useState([]);
+  const [viewTable, setViewTable] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
   const [showRecommendations, setShowRecommendations] = useState(false);
   
@@ -34,6 +37,7 @@ const Expenses = () => {
       console.log(user_id);
       setUserId(user_id);
       setChartRender(chartRender + 1);
+      setTableRender(tableRender + 1);
     }
   }, []);
 
@@ -57,6 +61,27 @@ const Expenses = () => {
     console.log(chartData);
     
   }, [user_id, chartRender]);
+
+  useEffect(() => {
+    const fetchTableData = async () => {
+      console.log(user_id);
+      if(user_id) {
+        try {
+          const response = await axios.post('http://127.0.0.1:5328/get_expenses', {user_id: user_id});
+          console.log(response.data)
+          setTableData(response.data.data);
+          setViewTable(true);
+        } catch (error) {
+          console.error('Network/Request Error:', error);
+        }
+      }
+    }
+
+    fetchTableData();
+    console.log("page");
+    console.log(tableData);
+    
+  }, [user_id, tableRender]);
 
   const handleSignOutClick = () => {
     localStorage.removeItem('jwt_token');
@@ -98,7 +123,7 @@ const Expenses = () => {
             <Card className=" w-2/3 h-full bg-slate-200 rounded-3xl  m-3 shadow-lg border-2 border-black">
               <div className=" flex flex-col justify-between items-center w-full h-full">
                 <div className="">
-                  <PowerTable />
+                  <PowerTable tableData={tableData} />
                 </div>
                 <div className=" h-[5/8] flex justify-evenly items-center w-full">
                   {viewChart ? <ExpenseChart title="Expense Analysis" chartData={chartData} chartHeight={150} chartWidth={500} blockHeight={200} blockWidth={375}/> : null}
@@ -110,7 +135,8 @@ const Expenses = () => {
                       <AddExpenses />
                     </div>
                     <div className="mt-3">
-                      <Button variant="contained" onClick={() => setChartRender(chartRender + 1)} className="bg-blue-600 w-60">Refresh</Button>
+                      <Button variant="contained" onClick={() => {setChartRender(chartRender + 1)
+                                                                  setTableRender(tableRender + 1)}} className="bg-blue-600 w-60">Refresh</Button>
                     </div>
                   </div>  
                 </div>
