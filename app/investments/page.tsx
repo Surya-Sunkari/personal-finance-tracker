@@ -2,14 +2,15 @@
 import React, { useEffect, useState } from "react";
 import StockTable from "../../components/stock-table";
 import { useRouter } from "next/navigation";
-import News_Carousel from "../../components/carousel";
+// import News_Carousel from "../../components/carousel";
+import NewCarousel from "@/components/NewCarousel";
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import ExpenseChart from "@/components/ExpenseChart";
 import AddInvestment from "@/components/AddInvestment";
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import NewCarousel from "@/components/NewCarousel";
+// import NewCarousel from "@/components/NewCarousel";
 import AddInvestments from "@/components/AddInvestments";
 
 const Investments = () => {
@@ -87,9 +88,9 @@ const Investments = () => {
       console.log(user_id);
       if(user_id) {
         try {
-          const response = await axios.post('http://127.0.0.1:5328/get_news', {user_id: user_id});
+          const response = await axios.post('http://127.0.0.1:5328/stock_news', {user_id: user_id});
           console.log(response.data)
-          setNewsData(response.data.data);
+          setNewsData(response.data);
           setViewNews(true);
         } catch (error) {
           console.error('Network/Request Error:', error);
@@ -147,7 +148,7 @@ const Investments = () => {
             
           </div>
         <h3 className=" text-white font-semibold py-4 text-center">Created for HackTX by Shray Jain, Surya Sunkari, and Tarun Mohan</h3>
-        {viewNews ? <News_Carousel news={newsData}/> : null}
+        {/* {viewNews ? <carousel newsData={newsData}/> : null} */}
     </div>
     {/* <StockTable/> */}
     </div>
