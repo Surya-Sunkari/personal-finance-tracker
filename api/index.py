@@ -15,6 +15,7 @@ from pymongo.server_api import ServerApi
 app = Flask(__name__)
 db_client = None
 CORS(app)
+CORS(app, resources={r"/new_expenses": {"origins": "http://localhost:3000"}})
 
 @app.route("/create_user", methods=['POST'])
 def create_user():

@@ -10,17 +10,17 @@ const columns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Name',
-    width: 230,
+    width: 175,
   },
   {
     field: 'category',
     headerName: 'Category',
-    width: 230,
+    width: 175,
   },
   {
     field: 'cost',
     headerName: 'Cost',
-    width: 230,
+    width: 175,
     sortComparator: (a, b) => parseFloat(a) - parseFloat(b),
     valueFormatter: (params) =>
       new Intl.NumberFormat('en-US', {
@@ -31,7 +31,7 @@ const columns: GridColDef[] = [
   {
     field: 'date',
     headerName: 'Date',
-    width: 230,
+    width: 175,
     sortComparator: (a, b) => new Date(a) - new Date(b),
     valueFormatter: (params) =>
       new Intl.DateTimeFormat('en-US').format(new Date(params.value)),
@@ -55,17 +55,9 @@ function PowerTable(): JSX.Element {
         const user_id = jwt.decode(token).user_id;
         console.log(user_id);
         setUserId(user_id);
-        axios.options('http://127.0.0.1:5328/get_expenses').then( async (response) => {
-          const res = await axios.post('http://127.0.0.1:5328/get_expenses', {user_id: user_id});
-          console.log(res.data);
-          setTableData(res.data);
-        }
-
-        )
-        .catch(error => {
-          // Handle errors from the OPTIONS request
-          console.error('OPTIONS Request Error:', error);
-        });
+        const res = await axios.post('http://127.0.0.1:5328/get_expenses', {user_id: user_id});
+        console.log(res.data);
+        setTableData(res.data);
       }
     }
     fetchData();
@@ -78,10 +70,11 @@ function PowerTable(): JSX.Element {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
+        height: '45vh',
+        marginTop: '20px'
       }}
     >
-      <Box sx={{ height: 400, width: '80%' }}>
+      <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={tableData}
           columns={columns}

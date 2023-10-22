@@ -58,7 +58,7 @@ const AddExpense = () => {
         
             if (response.status === 200) {
                 if(response.data.success) {
-                    console.log("expense added"); // TODO: add toast
+                    console.log("expense added");
                     setExpenseCost('');
                     setExpenseDate('');
                     setExpenseName('');
@@ -76,7 +76,7 @@ const AddExpense = () => {
                 console.error('Error:', response.data);
             }
         } catch (error) {
-            toast.success("Error!", {
+            toast.error("Error!", {
                 position: toast.POSITION.TOP_CENTER
             });
             console.error('Network/Request Error:', error);
@@ -86,7 +86,7 @@ const AddExpense = () => {
     return (
         <div>
             <ToastContainer />
-            <Button variant="contained" onClick={handleOpen} className="bg-blue-600">Manually Add Expense</Button>
+            <Button variant="contained" onClick={handleOpen} className="bg-blue-600 w-60">Manually Add Expense</Button>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -97,6 +97,7 @@ const AddExpense = () => {
                 slotProps={{
                 backdrop: {
                     timeout: 500,
+                    onClick: (e) => e.stopPropagation()
                 },
                 }}
             >
