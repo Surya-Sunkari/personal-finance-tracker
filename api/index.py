@@ -139,9 +139,12 @@ def get_expenses():
     user_id = expense_data["user_id"]
 
     result = list(db["expenses"].find({"user_id": user_id}).sort("date"))
+    i = 0
     for dict in result:
         del dict['_id']
         del dict['user_id']
+        dict['id'] = i
+        i += 1
     return {"data": result}
 
 
