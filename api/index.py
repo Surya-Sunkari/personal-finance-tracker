@@ -170,7 +170,6 @@ def get_recommendations():
         expense_result.append(expense["date"].strftime('%B') + " " + expense["date"].strftime('%Y'))
         result.append(expense_result)
     expense_string = "\n".join([f"{item} ({category}): ${price:.2f} - {date}" for item, category, price, date in result])
-    print(expense_string)
     return {"data": get_recommendation(expense_string)}
 
 
