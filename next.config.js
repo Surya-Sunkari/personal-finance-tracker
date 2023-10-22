@@ -11,6 +11,10 @@ const nextConfig = {
       },
     ]
   },
-}
+  env: {
+    NEXT_PUBLIC_JWT_SECRET_KEY: process.env.NEXT_PUBLIC_JWT_SECRET_KEY,
+  },
+  reactStrictMode: true,
+} 
 
 module.exports = nextConfig
