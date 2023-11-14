@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
 import { useRouter } from "next/navigation";
-import { headers } from 'next/dist/client/components/headers';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 130 },
@@ -43,7 +40,7 @@ const columns: GridColDef[] = [
   },
 ];
 
-function StockTable( {tableData} ): JSX.Element {
+function StockTable( {tableData}: {tableData: any} ): JSX.Element {
   const router = useRouter();
 
   return (
@@ -61,7 +58,6 @@ function StockTable( {tableData} ): JSX.Element {
           rows={tableData}
           columns={columns}
           paginationMode="server"
-          pageSize={5}
         />
       </Box>
     </div>

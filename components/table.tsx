@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
 import { useRouter } from "next/navigation";
 
 const columns: GridColDef[] = [
@@ -32,13 +30,13 @@ const columns: GridColDef[] = [
     field: 'date',
     headerName: 'Date',
     width: 175,
-    sortComparator: (a, b) => new Date(a) - new Date(b),
+    sortComparator: (a, b) => new Date(a).getTime() - new Date(b).getTime(),
     valueFormatter: (params) =>
       new Intl.DateTimeFormat('en-US').format(new Date(params.value)),
   },
 ];
 
-function PowerTable( {tableData} ): JSX.Element {
+function PowerTable( {tableData}: {tableData: any} ): JSX.Element {
   const router = useRouter();
 
   return (
@@ -56,7 +54,6 @@ function PowerTable( {tableData} ): JSX.Element {
           rows={tableData}
           columns={columns}
           paginationMode="server"
-          pageSize={5}
         />
       </Box>
     </div>
