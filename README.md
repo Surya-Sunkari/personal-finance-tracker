@@ -3,7 +3,7 @@ Cash Guardian
 Created for the HackTX 2023 Hackathon.
 
 Tackling the following issues:
-   - General alack of financial literacy
+   - General lack of financial literacy
    - Time intensive to manage personal finances
    - Overwhelming to keep track of financials
 
