@@ -14,7 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const style = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -27,17 +27,15 @@ const style = {
 };
   
 
-const AddInvestment = () => {
+const AddExpense = () => {
 
     const [open, setOpen] = useState(false);
-    const [TickerName, setTickerName] = useState('');
-    const [InvestmentDate, setInvestmentDate] = useState('');
-    const [InvestmentTime, setInvestmentTime] = useState('');
-    const [InvestmentQuantity, setInvestmentQuantity] = useState(0);
+    const [expenseName, setExpenseName] = useState('');
+    const [expenseCost, setExpenseCost] = useState('');
+    const [expenseDate, setExpenseDate] = useState('');
     const [userId, setUserId] = useState('');
 
     const router = useRouter();
-    
 
     useEffect(() => {
         const token = localStorage.getItem('jwt_token');
@@ -57,27 +55,25 @@ const AddInvestment = () => {
         try {
             const user_data = {
                 user_id: userId,
-                ticker: TickerName,
-                date: InvestmentDate,
-                time: InvestmentTime,
-                quantity: InvestmentQuantity
+                name: expenseName,
+                cost: parseInt(expenseCost),
+                date: expenseDate,
             };
         
-            const response = await axios.post('http://127.0.0.1:5328/new_stock', user_data);
+            const response = await axios.post('http://127.0.0.1:5328/new_expense', user_data);
         
             if (response.status === 200) {
                 if(response.data.success) {
-                    console.log("investment added"); // TODO: add toast
-                    setTickerName('');
-                    setInvestmentTime('');
-                    setInvestmentDate('');
-                    setInvestmentQuantity(0);
+                    console.log("expense added");
+                    setExpenseCost('');
+                    setExpenseDate('');
+                    setExpenseName('');
                     handleClose();
-                    toast.success("Investment added!", {
+                    toast.success("Expense added!", {
                         position: toast.POSITION.TOP_CENTER
                     });
                 } else {
-                    console.error('Investment Adding Failed', response.data); 
+                    console.error('Expense Adding Failed', response.data); 
                 }
             } else {
                 toast.error("Error!", {
@@ -86,7 +82,7 @@ const AddInvestment = () => {
                 console.error('Error:', response.data);
             }
         } catch (error) {
-            toast.success("Error!", {
+            toast.error("Error!", {
                 position: toast.POSITION.TOP_CENTER
             });
             console.error('Network/Request Error:', error);
@@ -96,7 +92,7 @@ const AddInvestment = () => {
     return (
         <div>
             <ToastContainer />
-            <Button variant="contained" onClick={handleOpen} className="bg-blue-700 hover:bg-blue-800 w-64">Manually Add Investment</Button>
+            <Button variant="contained" onClick={handleOpen} className="bg-green-700	 hover:bg-green-800 w-60">Manually Add Expense</Button>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -107,27 +103,24 @@ const AddInvestment = () => {
                 slotProps={{
                 backdrop: {
                     timeout: 500,
+                    onClick: (e) => e.stopPropagation()
                 },
                 }}
             >
                 <Fade in={open}>
                     <Box sx={style}>
-                        <h1 className=' text-2xl text-black font-bold pb-4'>Add Investment</h1>
+                        <h1 className=' text-2xl text-black font-bold pb-4'>Add Expense</h1>
                         <div className=' py-3'>
-                            <label className="block text-sm font-medium mb-2 dark:text-white">Ticker Name: </label>
-                            <input type="text" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="AAPL" value={TickerName} onChange={(e) => setTickerName(e.target.value)}></input>
+                            <label className="block text-sm font-medium mb-2 dark:text-white">Expense Name: </label>
+                            <input type="text" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Rent" value={expenseName} onChange={(e) => setExpenseName(e.target.value)}></input>
                         </div>
                         <div className=' py-3'>
-                            <label className="block text-sm font-medium mb-2 dark:text-white">Investment Date (yyyy-mm-dd): </label>
-                            <input type="text" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="2023-10-21" value={InvestmentDate} onChange={(e) => setInvestmentDate(e.target.value)}></input>
+                            <label className="block text-sm font-medium mb-2 dark:text-white">Expense Cost ($): </label>
+                            <input type="text" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="1199.00" value={expenseCost} onChange={(e) => setExpenseCost(e.target.value)}></input>
                         </div>
                         <div className=' py-3'>
-                            <label className="block text-sm font-medium mb-2 dark:text-white">Investment Time (hh:mm): </label>
-                            <input type="text" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="08:37" value={InvestmentTime} onChange={(e) => setInvestmentTime(e.target.value)}></input>
-                        </div>
-                        <div className=' py-3'>
-                            <label className="block text-sm font-medium mb-2 dark:text-white">Investment Quantity (shares): </label>
-                            <input type="number" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="15" value={InvestmentQuantity} onChange={(e) => setInvestmentQuantity(parseInt(e.target.value))}></input>
+                            <label className="block text-sm font-medium mb-2 dark:text-white">Expense Date (yyyy-mm-dd): </label>
+                            <input type="text" id="input-label" className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="2023-10-21" value={expenseDate} onChange={(e) => setExpenseDate(e.target.value)}></input>
                         </div>
                         <div className='pt-3 flex justify-center items-center'>
                             <Button variant='contained' color="success" className="bg-green-800"  onClick={handleSubmit}>Submit</Button>
@@ -139,7 +132,4 @@ const AddInvestment = () => {
   );
 };
 
-export default AddInvestment;
-
-
-
+export default AddExpense;

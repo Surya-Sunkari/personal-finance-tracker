@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/expenses/page.jsx", "app/expenses/loading.jsx", "app/investments/page.jsx", "app/investments/loading.jsx", "app/signIn/page.jsx", "app/signIn/loading.jsx", "app/signUp/page.jsx", "app/signUp/loading.jsx", "app/layout.tsx", "app/page.jsx", "components/stock-table.jsx", "components/NewCarousel.jsx", "components/ExpenseChart.jsx", "components/carousel.jsx", "components/AddInvestments.jsx", "components/AddInvestment.jsx", "components/AddExpenses.jsx", "components/AddExpense.jsx"],
   "exclude": ["node_modules"]
 }

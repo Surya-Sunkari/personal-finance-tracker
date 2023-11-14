@@ -12,7 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
@@ -24,12 +24,12 @@ const style = {
   borderRadius: 3,
 };
 
-const AddExpenses = () => {
+const AddInvestments = () => {
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState('');
 
   const router = useRouter();
-
+  
   useEffect(() => {
     const token = localStorage.getItem('jwt_token');
     if(!token) {
@@ -62,17 +62,17 @@ const AddExpenses = () => {
         },
       };
 
-      const response = await axios.post('http://127.0.0.1:5328/new_expenses', formData, config);
+      const response = await axios.post('http://127.0.0.1:5328/new_stocks', formData, config);
 
       if (response.status === 200) {
         if (response.data.success) {
-          console.log('Expenses added');
+          console.log('Investments added');
           handleClose();
-          toast.success('Expenses added!', {
+          toast.success('Investment added!', {
             position: toast.POSITION.TOP_CENTER,
           });
         } else {
-          console.error('Expenses Adding Failed', response.data);
+          console.error('Investment Adding Failed', response.data);
         }
       } else {
         toast.error('Error!', {
@@ -91,8 +91,8 @@ const AddExpenses = () => {
   return (
     <div>
       <ToastContainer />
-      <Button variant="contained" onClick={handleOpen} className="bg-green-700	 hover:bg-green-800 w-60">
-        Add Expenses From CSV
+      <Button variant="contained" onClick={handleOpen} className="bg-blue-700 hover:bg-blue-800 w-64">
+        Add Investments From CSV
       </Button>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -110,8 +110,8 @@ const AddExpenses = () => {
       >
         <Fade in={open}>
           <Box sx={style}>
-            <h1 className="text-2xl text-black font-bold pb-4">Add Expenses From CSV</h1>
-            <p className="pb-8 text-red-500 ">CSV Format: name | cost | date</p>
+            <h1 className="text-2xl text-black font-bold pb-4">Add Investments From CSV</h1>
+            <p className="pb-8 text-red-500 ">CSV Format: ticker | quantity | date | time</p>
             <form encType="multipart/form-data" onSubmit={handleSubmit}>
               <label className="block">
                 <span className="sr-only">Choose CSV</span>
@@ -141,5 +141,5 @@ const AddExpenses = () => {
   );
 };
 
-export default AddExpenses;
+export default AddInvestments;
 
